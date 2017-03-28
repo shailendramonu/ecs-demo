@@ -12,8 +12,8 @@ RUN cd /usr/src/app; npm install --only=production
 # Bundle app source
 COPY . /usr/src/app
 
-EXPOSE  8080
-CMD ["node", "/src/index.js"]
+#EXPOSE  8080
+#CMD ["node", "/src/index.js"]
 
 #FROM node:6.10.0
 
