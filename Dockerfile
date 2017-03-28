@@ -59,4 +59,5 @@ EXPOSE 3000
 
 CMD ["pm2", "start", "processes.json", "--no-daemon"]
 # the --no-daemon is a minor workaround to prevent the docker container from thinking pm2 has stopped running and ending itself
+
 # voila!
