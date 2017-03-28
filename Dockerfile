@@ -1,10 +1,27 @@
-FROM node:6.10.0
+FROM alpine:3.1
 
-# Create app directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Update
+RUN apk add --update nodejs
 
 ENV NODE_ENV=production
+# Install app dependencies
+RUN mkdir -p /usr/src/app
+COPY package.json /usr/src/app/package.json
+RUN cd /usr/src/app; npm install --only=production
+
+# Bundle app source
+COPY . /usr/src/app
+
+EXPOSE  8080
+CMD ["node", "/src/index.js"]
+
+#FROM node:6.10.0
+
+# Create app directory
+#RUN mkdir -p /usr/src/app
+#WORKDIR /usr/src/app
+
+
 #RUN npm install -g mean-cli bower gulp
 
 #RUN	groupadd -r node \
@@ -16,10 +33,10 @@ ENV NODE_ENV=production
 
 #USER node
 #RUN touch /home/node/.mean
-COPY package.json /usr/src/app/
-RUN npm install --only=production
+#COPY package.json /usr/src/app/
+#RUN npm install --only=production
 
-COPY . /usr/src/app/
+#COPY . /usr/src/app/
 #ENV PORT 3000
 #ENV DB_PORT_27017_TCP_ADDR db
 EXPOSE 3000
