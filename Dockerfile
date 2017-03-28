@@ -1,55 +1,62 @@
-FROM alpine:3.1
+# Dockerfile
+# using debian:jessie for it's smaller size over ubuntu
+FROM debian:jessie
 
-# Update
-RUN apk add --update nodejs
+# Replace shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-ENV NODE_ENV=production
-# Install app dependencies
-RUN mkdir -p /usr/src/app
-COPY package.json /usr/src/app/package.json
-RUN cd /usr/src/app; npm install --only=production
+# Set environment variables
+ENV appDir /var/www/app/current
 
-# Bundle app source
-COPY . /usr/src/app
+# Run updates and install deps
+RUN apt-get update
 
-#EXPOSE  8080
-#CMD ["node", "/src/index.js"]
+RUN apt-get install -y -q --no-install-recommends \
+    apt-transport-https \
+    build-essential \
+    ca-certificates \
+    curl \
+    g++ \
+    gcc \
+    git \
+    make \
+    nginx \
+    sudo \
+    wget \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get -y autoclean
 
-#FROM node:6.10.0
+ENV NVM_DIR /usr/local/nvm
+ENV NODE_VERSION 6.10.0
 
-# Create app directory
-#RUN mkdir -p /usr/src/app
-#WORKDIR /usr/src/app
+# Install nvm with node and npm
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.1/install.sh | bash \
+    && source $NVM_DIR/nvm.sh \
+    && nvm install $NODE_VERSION \
+    && nvm alias default $NODE_VERSION \
+    && nvm use default
 
+# Set up our PATH correctly so we don't have to long-reference npm, node, &c.
+ENV NODE_PATH $NVM_DIR/versions/node/v$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
 
-#RUN npm install -g mean-cli bower gulp
+# Set the work directory
+RUN mkdir -p /var/www/app/current
+WORKDIR ${appDir}
 
-#RUN	groupadd -r node \
-#&&	useradd -r -m -g node node
+# Add our package.json and install *before* adding our application files
+ADD package.json ./
+RUN npm i --production
 
+# Install pm2 so we can run our application
+RUN npm i -g pm2
 
-#RUN rm -rf /usr/src/app/node_modules
-#RUN chown -R node:node /usr/src/app
+# Add application files
+ADD . /var/www/app/current
 
-#USER node
-#RUN touch /home/node/.mean
-#COPY package.json /usr/src/app/
-#RUN npm install --only=production
-
-#COPY . /usr/src/app/
-#ENV PORT 3000
-#ENV DB_PORT_27017_TCP_ADDR db
+#Expose the port
 EXPOSE 3000
-CMD [ "npm", "start" ]
 
-
-#How to build:
-# git clone git@github.com:shailendramonu/ecs-demo.git
-# cd ecs-demo
-# docker build -t ecs-demo .
-
-#How to run:
-# docker pull mongo
-# docker run -d --name db mongo
-# docker run -p 3000:3000 --link db:db mean
-#https://blog.codeship.com/running-mean-web-application-docker-containers-aws/
+CMD ["pm2", "start", "processes.json", "--no-daemon"]
+# the --no-daemon is a minor workaround to prevent the docker container from thinking pm2 has stopped running and ending itself
+# voila!
