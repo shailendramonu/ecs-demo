@@ -5,6 +5,8 @@ FROM debian:jessie
 # Replace shell with bash so we can source files
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
+RUN mkdir -p /var/www/app/current/bin/www
+
 # Set environment variables
 ENV appDir /var/www/app/current
 
