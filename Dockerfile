@@ -1,5 +1,9 @@
 FROM node:boron
 
+# Set environment docker build --build-arg NODE=development --rm
+ARG NODE=production
+ENV NODE_ENV ${NODE}
+
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
