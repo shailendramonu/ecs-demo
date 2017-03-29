@@ -1,15 +1,15 @@
-# DOCKER-VERSION 1.1.2
-FROM ubuntu:latest
+FROM node:boron
 
-# Install Node.js and npm
-RUN apt-get -y update
-RUN apt-get -y install nodejs
-RUN apt-get -y install npm
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package.json /usr/src/app/
+RUN npm install
 
 # Bundle app source
-ADD . /src
-# Install app dependencies
-RUN cd /src; npm install --only production
+COPY . /usr/src/app
 
-EXPOSE  3000
-CMD ["nodejs", "/src/server/server.js"]
+EXPOSE 5000
+CMD [ "npm", "start" ]
