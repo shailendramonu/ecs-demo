@@ -1,0 +1,18 @@
+{
+  "family": "ecs-demo-task",
+  "containerDefinitions": [
+    {
+      "image": "891873015519.dkr.ecr.ap-southeast-2.amazonaws.com/ecs-demo:v_0",
+      "name": "ecs-demo-container",
+      "cpu": 10,
+      "memory": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 5000,
+          "hostPort": 80
+        }
+      ]
+    }
+  ]
+}
