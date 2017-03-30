@@ -2,7 +2,7 @@
   "family": "ecs-demo-task",
   "containerDefinitions": [
     {
-      "image": "891873015519.dkr.ecr.ap-southeast-2.amazonaws.com/ecs-demo:v_0",
+      "image": "%REPOSITORY_URI%:v_%BUILD_NUMBER%",
       "name": "ecs-demo-container",
       "cpu": 10,
       "memory": 256,
