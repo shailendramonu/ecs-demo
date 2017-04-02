@@ -1,21 +1,26 @@
-var express = require('express');
-var app = express();
-var env = process.env.NODE_ENV || 'dev';
-var appdir = 'app';
-if(env === 'production'){
-  appdir = 'dist';
-}
+(function () {
+  'use strict';
 
-console.log('Environment :: ' + env);
+  var express = require('express');
+  var app = express();
+  var env = process.env.NODE_ENV || 'dev';
+  var appdir = 'app';
+  if(env === 'production'){
+    appdir = 'dist';
+  }
 
-console.log('__dirname', __dirname + '\n');
+  console.log('Environment :: ' + env);
 
-app.use(express.static(__dirname + '/' + appdir));
+  console.log('__dirname', __dirname + '\n');
 
-app.get('/', function (req, res) {
-  //console.log('res', res);
-  res.redirect('/index.html');
-});
+  app.use(express.static(__dirname + '/' + appdir));
 
-app.listen(5000);
-console.log('Server started at :: http://localhost:5000/');
+  app.get('/', function (req, res) {
+    //console.log('res', res);
+    res.redirect('/index.html');
+  });
+
+  app.listen(5000);
+  console.log('Server started at :: http://localhost:5000/');
+
+}());
