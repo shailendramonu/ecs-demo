@@ -8,9 +8,9 @@ ENV NODE_ENV ${NODE}
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-# Install app dependencies
+# Install app dependencies to run only production based dependencies DO NOT RUN FOR DEV IT MIGHT FAIL
 COPY package.json /usr/src/app/
-RUN npm install --only ${NODE}
+RUN npm install --only production
 
 # Bundle app source
 COPY . /usr/src/app
