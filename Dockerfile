@@ -1,7 +1,7 @@
 FROM node:boron
 
 # Set environment docker build --build-arg NODE=development --rm
-ARG NODE=production
+ARG NODE=dev
 ENV NODE_ENV ${NODE}
 
 # Create app directory
